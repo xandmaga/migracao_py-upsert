@@ -1,5 +1,6 @@
 import psycopg2
 import collections
+import json
 
 
 def consulta(query):
@@ -79,10 +80,13 @@ def consulta_tabelas_dependentes(tabela, lista_tabelas_resultado):
 		else:
 			return lista_tabelas_resultado
 
-def le_arquivo(filename):
+def le_arquivo_json(filename):
     print(filename)
     f = open(filename, 'r')
-    return [r for r in f]
+    lista = []
+    for row in f:
+        lista.append(json.loads(row))
+    return lista
 
 
 class OrderedSet(collections.MutableSet):
@@ -159,8 +163,8 @@ from upsert import Upsert
 from csv2json import carrega_arquivo
 
 def migra_tabela(tabela):
-	json_id_tabela = le_arquivo(tabela + "_ids.json")
-	json_tabela = le_arquivo(tabela + ".json")
+	json_id_tabela = le_arquivo_json(tabela + "_ids.json")
+	json_tabela = le_arquivo_json(tabela + ".json")
 
 	linhas = len(json_id_tabela)	
 	upsert = Upsert(cursor, tabela)
@@ -182,7 +186,13 @@ def migra_linha():
 pjesupconn = psycopg2.connect("dbname=pje user=pjeadmin password=pj3adm1n-TJMG host=linbdpje-5 port=5432")
 pjesupcursor = pjesupconn.cursor()
 '''
-pje_tstlocal_conn = psycopg2.connect("dbname=pje user=postgres password=123456 host=localhost port=5432")
+
+'''
+pje_local_conn = psycopg2.connect("dbname=pje user=postgres password=123456 host=localhost port=5432")
+pje_local_cursor = pje_tstlocal_conn.cursor()
+'''
+
+pje_tstlocal_conn = psycopg2.connect("dbname=pjetst user=postgres password=Postgres1234 host=localhost port=5432")
 pje_tstlocal_cursor = pje_tstlocal_conn.cursor()
 
 cursor = pje_tstlocal_cursor
