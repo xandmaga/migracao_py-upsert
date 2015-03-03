@@ -77,7 +77,13 @@ def consulta_tabelas_dependentes(tabela, lista_tabelas_resultado):
 					lista_tabelas_resultado.append(tabela)
 					consulta_tabelas_dependentes(tabela=tabela, lista_tabelas_resultado=lista_tabelas_resultado)
 		else:
-			return lista_tabelas_resultado			
+			return lista_tabelas_resultado
+
+def le_arquivo(filename):
+    print(filename)
+    f = open(filename, 'r')
+    return [r for r in f]
+
 
 class OrderedSet(collections.MutableSet):
 
@@ -153,8 +159,8 @@ from upsert import Upsert
 from csv2json import carrega_arquivo
 
 def migra_tabela(tabela):
-	json_id_tabela = carrega_arquivo(tabela + "_ids.json")
-	json_tabela = carrega_arquivo(tabela + ".json")
+	json_id_tabela = le_arquivo(tabela + "_ids.json")
+	json_tabela = le_arquivo(tabela + ".json")
 
 	linhas = len(json_id_tabela)	
 	upsert = Upsert(cursor, tabela)
@@ -176,7 +182,7 @@ def migra_linha():
 pjesupconn = psycopg2.connect("dbname=pje user=pjeadmin password=pj3adm1n-TJMG host=linbdpje-5 port=5432")
 pjesupcursor = pjesupconn.cursor()
 '''
-pje_tstlocal_conn = psycopg2.connect("dbname=pjetst user=postgres password=Postgres1234 host=localhost port=5432")
+pje_tstlocal_conn = psycopg2.connect("dbname=pje user=postgres password=123456 host=localhost port=5432")
 pje_tstlocal_cursor = pje_tstlocal_conn.cursor()
 
 cursor = pje_tstlocal_cursor
