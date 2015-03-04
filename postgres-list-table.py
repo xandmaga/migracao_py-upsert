@@ -85,7 +85,7 @@ def le_arquivo_json(filename):
     f = open(filename, 'r')
     lista = []
     for row in f:
-        lista.append(json.loads(row))
+        lista.append(json.loads(row.replace('\\\\','\\')))
     return lista
 
 
@@ -187,15 +187,17 @@ pjesupconn = psycopg2.connect("dbname=pje user=pjeadmin password=pj3adm1n-TJMG h
 pjesupcursor = pjesupconn.cursor()
 '''
 
-'''
-pje_local_conn = psycopg2.connect("dbname=pje user=postgres password=123456 host=localhost port=5432")
-pje_local_cursor = pje_tstlocal_conn.cursor()
-'''
 
+pje_local_conn = psycopg2.connect("dbname=pje user=postgres password=123456 host=localhost port=5432")
+pje_local_cursor = pje_local_conn.cursor()
+cursor = pje_local_cursor
+
+
+'''
 pje_tstlocal_conn = psycopg2.connect("dbname=pjetst user=postgres password=Postgres1234 host=localhost port=5432")
 pje_tstlocal_cursor = pje_tstlocal_conn.cursor()
-
 cursor = pje_tstlocal_cursor
+'''
 
 cursor.execute("set search_path = public, acl, core, client, criminal, jt;")
 	 

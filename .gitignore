@@ -62,3 +62,5 @@ target/
 /tb_usuario_login_ids.json
 /tb_classe_judicial.csv
 /tb_classe_judicial1.csv
+tb_classe_judicial_ids_ok.json
+tb_classe_judicial_ok.json
