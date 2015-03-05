@@ -56,6 +56,6 @@ class Upsert:
     implementations = {
         "<type 'sqlite3.Cursor'>":              Sqlite3,
         "<class 'MySQLdb.cursors.Cursor'>":     Mysql,
-        # "<type 'psycopg2._psycopg.cursor'>":    Postgresql psycopg 2.5
-        "<type 'psycopg2.extensions.cursor'>":    Postgresql  #psycopg 2.6
+        "<type 'psycopg2._psycopg.cursor'>":    Postgresql #psycopg 2.5
+        # "<type 'psycopg2.extensions.cursor'>":    Postgresql  #psycopg 2.6
     }

@@ -1,7 +1,7 @@
 import psycopg2
 import collections
 import json
-
+import sys
 
 def consulta(query):
 	cursor.execute(query)
@@ -160,25 +160,34 @@ print(consulta_tabelas_dependentes_lista(lista_tabelas=["tb_jurisdicao"], lista_
 '''
 
 from upsert import Upsert
-from csv2json import carrega_arquivo
+import traceback
 
 def migra_tabela(tabela):
-	json_id_tabela = le_arquivo_json(tabela + "_ids.json")
-	json_tabela = le_arquivo_json(tabela + ".json")
 
-	linhas = len(json_id_tabela)	
-	upsert = Upsert(cursor, tabela)
-	i=0
+    try:
 
-	while i < linhas:	
-		upsert.row(json_id_tabela[i] , json_tabela[i])
-		i = i + 1
+        json_id_tabela = le_arquivo_json(tabela + "_ids.json")
+        json_tabela = le_arquivo_json(tabela + ".json")
+
+        linhas = len(json_id_tabela)
+        upsert = Upsert(cursor, tabela)
+        i=0
+
+        while i < linhas:
+            upsert.row(json_id_tabela[i] , json_tabela[i])
+            i = i + 1
+        return True
+    except:
+        traceback.print_exc(file=sys.stdout)
+        return False
 
 def migra_linha():
 	upsert = Upsert(cursor, "tb_endereco" )
 	upsert.row({'id_endereco': 100054} , {'nm_logradouro': "RUA HERACLITO", 'id_cep': 365878})
 
 
+def migra_tabelas(lista_tabelas):
+    return [migra_tabela(tabela) for tabela in lista_tabelas]
 
 
 
@@ -188,17 +197,22 @@ pjesupcursor = pjesupconn.cursor()
 '''
 
 
+''' conexao pjetstcasa
 pje_local_conn = psycopg2.connect("dbname=pje user=postgres password=123456 host=localhost port=5432")
 pje_local_cursor = pje_local_conn.cursor()
 cursor = pje_local_cursor
-
-
 '''
+
+''' conexao pjetstlocal '''
 pje_tstlocal_conn = psycopg2.connect("dbname=pjetst user=postgres password=Postgres1234 host=localhost port=5432")
 pje_tstlocal_cursor = pje_tstlocal_conn.cursor()
 cursor = pje_tstlocal_cursor
-'''
 
-cursor.execute("set search_path = public, acl, core, client, criminal, jt;")
-	 
-migra_tabela("tb_classe_judicial")
+
+cursor.execute("set search_path = public, acl, core, client, criminal, jt; SET CONSTRAINTS ALL DEFERRED;")
+
+lista_tabelas = ['tb_classe_judicial', 'tb_assunto_trf', 'tb_competencia', 'tb_orgao_julgador', 'tb_dimensao_alcada', 'tb_aplicacao_classe', 'tb_jurisdicao', 'tb_localizacao']
+lista_tabelas.reverse()
+migra_tabelas(lista_tabelas)
+
+#migra_tabela("tb_classe_judicial")
