@@ -194,7 +194,14 @@ def migra_tabelas(lista_tabelas):
 ''' Conexao pjesup
 pjesupconn = psycopg2.connect("dbname=pje user=pjeadmin password=pj3adm1n-TJMG host=linbdpje-5 port=5432")
 pjesupcursor = pjesupconn.cursor()
+cursor = pjesupcursor
 '''
+
+#Conexao pjetst
+pjetstconn = psycopg2.connect("dbname=pje user=pjeadmin password=pj3adm1n-TJMG host=linbdpje-10 port=5432")
+pjetstcursor = pjetstconn.cursor()
+cursor = pjetstcursor
+
 
 
 ''' conexao pjetstcasa
@@ -203,15 +210,15 @@ pje_local_cursor = pje_local_conn.cursor()
 cursor = pje_local_cursor
 '''
 
-''' conexao pjetstlocal '''
+''' # conexao pjetstlocal
 pje_tstlocal_conn = psycopg2.connect("dbname=pjetst user=postgres password=Postgres1234 host=localhost port=5432")
 pje_tstlocal_cursor = pje_tstlocal_conn.cursor()
 cursor = pje_tstlocal_cursor
-
+'''
 
 cursor.execute("set search_path = public, acl, core, client, criminal, jt; SET CONSTRAINTS ALL DEFERRED;")
 
-lista_tabelas = ['tb_classe_judicial', 'tb_assunto_trf', 'tb_competencia', 'tb_orgao_julgador', 'tb_dimensao_alcada', 'tb_aplicacao_classe', 'tb_jurisdicao', 'tb_localizacao']
+lista_tabelas = ['tb_classe_judicial','tb_assunto_trf','tb_competencia','tb_orgao_julgador','tb_dimensao_alcada','tb_aplicacao_classe','tb_jurisdicao','tb_localizacao','tb_endereco','tb_estado','tb_cep','tb_fluxo','tb_tipo_audiencia','tb_tipo_parte','tb_tipo_parte_trf','tb_usuario']
 lista_tabelas.reverse()
 migra_tabelas(lista_tabelas)
 
