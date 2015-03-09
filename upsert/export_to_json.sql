@@ -43,10 +43,21 @@ begin
     ORDER BY schema_table
   LOOP
   	columns_id := (SELECT string_agg(a.attname, ',') FROM   pg_index i JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE  i.indrelid = tables.schema_table::regclass AND i.indisprimary);
-    statement := 'COPY ' || ' (select row_to_json(t) from (  select ' || columns_id || ' from ' || tables.schema_table || ' order by ' || columns_id || ' ) t )' || ' TO ''' || path || '\\' || tables.schema_table || '_ids' || '.json''';
+    statement := 'COPY ' || ' (select row_to_json(t) from (  select ' || columns_id || ' from ' || tables.schema_table || ' order by ' || tables.schema_table || ' ) t )' || ' TO ''' || path || '\\' || tables.schema_table || '_ids' || '.json''';
     EXECUTE statement;
   END LOOP;
   return;  
 end;
 $$ LANGUAGE plpgsql;
 SELECT db_to_json('C:\\Users\\t0085324\\workspace\\bitbucket\\emacs\\org\\tarefas\\pje\\redmine\\14344\\pjetstlocal');
+
+
+-- ('tb_classe_judicial', 'tb_assunto_trf', 'tb_competencia', 'tb_orgao_julgador', 'tb_dimensao_alcada', 'tb_aplicacao_classe', 'tb_jurisdicao', 'tb_localizacao', 'tb_endereco', 'tb_estado', 'tb_cep', 'tb_fluxo', 'tb_tipo_audiencia', 'tb_tipo_parte', 'tb_tipo_parte_trf', 'tb_usuario', 'tb_municipio', 'tb_usuario_login')
+
+
+-- SELECT string_agg(a.attname, ',') FROM   pg_index i JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE  i.indrelid = 'tb_localizacao'::regclass AND i.indisprimary
+
+-- select row_to_json(t) from ( select id_localizacao from tb_localizacao order by tb_localizacao) t 
+
+
+-- select id_localizacao from tb_localizacao order by id_localizacao

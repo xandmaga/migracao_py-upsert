@@ -170,16 +170,24 @@ def migra_tabela(tabela):
         json_tabela = le_arquivo_json(tabela + ".json")
 
         linhas = len(json_id_tabela)
+
         upsert = Upsert(cursor, tabela)
         i=0
 
         while i < linhas:
             upsert.row(json_id_tabela[i] , json_tabela[i])
             i = i + 1
+
         return True
     except:
         traceback.print_exc(file=sys.stdout)
         return False
+
+def desabilita_triggers(tabela):
+    cursor.execute("ALTER TABLE " + tabela + " DISABLE TRIGGER ALL;")    
+
+def habilita_triggers(tabela):
+    cursor.execute("ALTER TABLE " + tabela + " ENABLE TRIGGER ALL;")
 
 def migra_linha():
 	upsert = Upsert(cursor, "tb_endereco" )
@@ -218,7 +226,7 @@ cursor = pje_tstlocal_cursor
 
 cursor.execute("set search_path = public, acl, core, client, criminal, jt; SET CONSTRAINTS ALL DEFERRED;")
 
-lista_tabelas = ['tb_classe_judicial','tb_assunto_trf','tb_competencia','tb_orgao_julgador','tb_dimensao_alcada','tb_aplicacao_classe','tb_jurisdicao','tb_localizacao','tb_endereco','tb_estado','tb_cep','tb_fluxo','tb_tipo_audiencia','tb_tipo_parte','tb_tipo_parte_trf','tb_usuario']
+lista_tabelas = ['tb_classe_judicial','tb_assunto_trf','tb_competencia','tb_orgao_julgador']
 lista_tabelas.reverse()
 migra_tabelas(lista_tabelas)
 
