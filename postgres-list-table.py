@@ -22,32 +22,6 @@ def constroi_consulta(tabela):
 	query = "SELECT distinct cl2.relname AS ref_table FROM pg_constraint as co JOIN pg_class AS cl1 ON co.conrelid=cl1.oid JOIN pg_class AS cl2 ON co.confrelid=cl2.oid WHERE co.contype='f' AND cl1.relname = " + tabela + " AND cl2.relname <> cl1.relname ORDER BY cl2.relname"	
 	return query
 
-def export_csv(lista_tabelas, path):
-	query_parte1 = """
-CREATE OR REPLACE FUNCTION db_to_csv(path TEXT) RETURNS void AS $$
-declare
-   tables RECORD;
-   statement TEXT;
-begin
-  FOR tables IN """
-
-  	tabelas = ""
-	for tabela in lista_tabelas:
-		tabelas = tabelas + "'" + tabela + "'," 
-
-	query_parte2 = ("(" + tabelas + ")").replace(",)", ")")
-
-  	query_parte3 = """
-  LOOP
-    statement := 'COPY ' || tables.schema_table || ' TO ''' || path || '\' || tables.schema_table || '.csv' ||''' DELIMITER '';'' CSV HEADER';
-    EXECUTE statement;
-  END LOOP;
-  return;  
-end;
-$$ LANGUAGE plpgsql;"""
-	query = "SELECT db_to_csv(" + path + ");"
-
-	
 
 def convert_tupla_lista(lista_tupla):
 	
@@ -67,18 +41,6 @@ def consulta_tabelas_dependentes_lista(lista_tabelas, lista_tabelas_resultado):
 		else:
 			return lista_tabelas_resultado
 
-
-def consulta_tabelas_dependentes(tabela, lista_tabelas_resultado):
-		lista_tabelas_temp = []
-
-		if tabela is not None:
-			lista_tabelas_temp = convert_tupla_lista(consulta(constroi_consulta(tabela=tabela)))
-			for tabela in lista_tabelas_temp:
-				if tabela not in lista_tabelas_resultado:
-					lista_tabelas_resultado.append(tabela)
-					consulta_tabelas_dependentes(tabela=tabela, lista_tabelas_resultado=lista_tabelas_resultado)
-		else:
-			return lista_tabelas_resultado
 
 def le_arquivo_json(filename):
     print(filename)
